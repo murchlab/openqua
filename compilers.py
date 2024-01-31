@@ -1,5 +1,7 @@
 # Todos:
 #   Solve the warning: Missing module docstring
+#   Define the compiler flags
+#   Global debug logging levels
 import numbers
 import numpy as np
 from scipy.interpolate import interp1d
@@ -259,7 +261,7 @@ class IQWaveforms:
 
 #
 # The class for analog waveforms.
-#
+# Todos: Solve the warning: missing class docstring
 class Waveform:
     # Initialization
     # Parameters:
@@ -313,10 +315,10 @@ class Waveform:
     # Parameters:
     #    length: The desired length of the generated waveform. This is the
     #            number of samples in the waveform.
-    #    duration: (optional): If provided, the waveform is interpolated to
+    #    duration (optional): If provided, the waveform is interpolated to
     #              fit this new duration. This effectively changes the
     #              sampling rate or stretches/compresses the waveform in time.
-    #    truncate: (optional): If provided, the waveform is truncated to this
+    #    truncate (optional): If provided, the waveform is truncated to this
     #              number of samples. Useful for cutting off the waveform
     #              after a certain point.
     # Returns: The method returns a numpy array representing the generated
@@ -380,8 +382,16 @@ class Waveform:
 
 #
 # The class for digital waveforms.
-#
+# Todos: Solve the warning: missing class docstring
 class DigitalWaveform:
+    # Initialization
+    # Parameters:
+    #   digital_waveform_data:
+    #       A dictionary containing the digital waveform specification. It
+    #       must include a key 'samples' that maps to a list of tuples, where
+    #       each tuple contains a Boolean value indicating the digital level
+    #       (high or low) and an integer indicating the duration (number of
+    #       samples) for that level.
     def __init__(self, digital_waveform_data):
         # Initialize the DigitalWaveform object with provided waveform data.
         self.samples = np.empty(0, dtype=bool)  # Start with an empty array
@@ -402,6 +412,21 @@ class DigitalWaveform:
             self.samples = np.pad(
                 self.samples, (0, length), 'constant', constant_values=val)
 
+    # Generating the digital waveform
+    # Parameters:
+    #   length: The desired length of the generated waveform. This is the
+    #           number of samples in the waveform.
+    #   buffer (optional): Specifies the width of the buffer effect to be
+    #       applied to the waveform. A nonzero buffer will simulate the effect
+    #       of signal broadening due to a digital buffer, making the non-zero
+    #       segments longer. The buffer value essentially determines the width
+    #       of the convolution kernel.
+    # Returns:
+    #   The generate method returns a numpy array of Boolean values
+    #   representing the digital waveform. This array will have a length
+    #   specified by the length parameter, and it will contain the digital
+    #   levels (True for high, False for low) based on the original waveform
+    #   definition and any modifications due to the specified buffer value.
     def generate(self, length, buffer=0):
         # Generate the digital waveform based on the specified length and
         # buffer.
@@ -431,34 +456,112 @@ class DigitalWaveform:
             # If no buffer is specified, return the waveform as is.
             return waveform
 
-        
-        
+
+#
+# The class for integration weights.
+# Todos: Solve the warning: missing class docstring
 class IntegrationWeight:
+    # Initialization
+    # Parameters:
+    #   integration_weight_data:
+    #       Type: Dictionary
+    #       Description: Dictionary containing the data for constructing the
+    #           integration weights. This dictionary should include two keys,
+    #           'cosine' and 'sine', each mapping to a list of tuples. Each
+    #           tuple in these lists represents a segment of the integration
+    #           weight curve, where the first element of the tuple is the
+    #           value of the weight and the second element is the length (in
+    #           samples) of the segment with this weight
     def __init__(self, integration_weight_data):
-        self.cosine = np.empty(0, dtype=np.float64)
-        self.sine = np.empty(0, dtype=np.float64)
+        # Initialize the IntegrationWeight object with provided data for
+        # cosine and sine components.
+        self.cosine = np.empty(0, dtype=np.float64)  # Start with an empty
+        # array for the cosine component.
+        self.sine = np.empty(0, dtype=np.float64)    # Start with an empty
+        # array for the sine component.
+
+        # Populate the cosine component array based on the provided data.
+        # Each tuple in the 'cosine' list consists of a value and its length,
+        # used to extend the cosine array.
         for val, length in integration_weight_data['cosine']:
-            self.cosine = np.pad(self.cosine, (0, length), 'constant', constant_values=val)
+            self.cosine = np.pad(
+                self.cosine, (0, length),
+                'constant', constant_values=val)
+
+        # Similarly, populate the sine component array based on the provided
+        # data.
         for val, length in integration_weight_data['sine']:
-            self.sine = np.pad(self.sine, (0, length), 'constant', constant_values=val)
+            self.sine = np.pad(
+                self.sine, (0, length),
+                'constant', constant_values=val)
         
+        # Ensure both the cosine and sine arrays are of the same length,
+        # padding the shorter array if necessary.
         if len(self.cosine) > len(self.sine):
             self.length = len(self.cosine)
-            self.sine = np.pad(self.sine, (0, self.length - len(self.sine)), 'constant', constant_values=0)
+            self.sine = np.pad(
+                self.sine, (0, self.length - len(self.sine)),
+                'constant', constant_values=0)
         else:
             self.length = len(self.sine)
-            self.cosine = np.pad(self.cosine, (0, self.length - len(self.cosine)), 'constant', constant_values=0)
+            self.cosine = np.pad(
+                self.cosine, (0, self.length - len(self.cosine)),
+                'constant', constant_values=0)
 
+        # Normalize the cosine and sine components to ensure their vector sum
+        # has a unit magnitude.
         norm = np.linalg.norm(self.cosine + 1j * self.sine)
         self.cosine /= norm
         self.sine /= norm
 
-    def generate(self, intermediate_frequency, time, phase=0.0, switch_IQ=False):
-        t = (np.arange(self.length) + time) * 1E-9
+    # Generating the integration weights
+    # Parameters:
+    #   intermediate_frequency: The intermediate frequency at which the
+    #       integration weights are to be applied.
+    #       Type: Float
+    #       Description: This frequency is used to calculate the phase of the
+    #           cosine and sine components of the integration
+    #           weights.
+    #   time: The starting time offset for the integration weights.
+    #       Type: Float
+    #       Description: This offset is added to the time base used for
+    #           generating the phase shifts, allowing for time-alignment of
+    #           the integration weights with the signal.
+    #   phase (optional): Additional phase offset to be applied to the
+    #       integration weights.
+    #       Type: Float
+    #       Default: 0.0
+    #       Description: This parameter allows for an additional phase shift
+    #           to be applied.
+    #   switch_IQ (optional): Flag to switch the I (in-phase) and Q
+    #       (quadrature) components in the rotation matrix.
+    #       Type: Boolean
+    #       Default: False
+    #       Description: When set to True, the I and Q components are switched
+    #           in the rotation matrix applied to the integration weights.
+    #           This can be useful for certain types of signal processing or
+    #           demodulation schemes.
+    def generate(self, intermediate_frequency, time, phase=0.0,
+                 switch_IQ=False):
+        # Generate time-shifted and phase-rotated integration weights for a
+        # given intermediate frequency and time offset.
+
+        # Calculate the time vector, adding the specified time offset to each
+        # sample point.
+        t = (np.arange(self.length) + time) * 1E-9  # Convert time to seconds
+        # assuming sample rate is in GHz.
+
+        # Compute the phase shift for each sample point based on the
+        # intermediate frequency and additional phase offset.
         phi = 2 * np.pi * intermediate_frequency * t + phase
+
+        # Calculate the rotated cosine and sine values for each sample point.
         R_cos = np.cos(phi)
         R_sin = np.sin(phi)
         
+        # Construct the rotation matrix. If switch_IQ is True, switch the
+        # roles of the cosine and sine components.
+        # Todos: check the rotation matrices
         if switch_IQ:
             R = np.array([
                 [R_cos, -R_sin],
@@ -470,8 +573,12 @@ class IntegrationWeight:
                 [-R_sin, R_cos]
             ])
             
+        # Apply the rotation matrix to the integration weights, effectively
+        # rotating them in the complex plane.
         iw = np.einsum('ijt,jt->it', R, [self.cosine, self.sine])
-        return iw
+
+        return iw  # Return the rotated integration weights as a 2D numpy
+        # array.
 
 
 class Task:

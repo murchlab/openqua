@@ -1,6 +1,5 @@
 # Todos:
 #   Solve the warning: Missing module docstring
-
 import numbers
 import numpy as np
 from scipy.interpolate import interp1d
@@ -259,9 +258,34 @@ class IQWaveforms:
 
 
 #
-# Waveform class
+# The class for analog waveforms.
 #
 class Waveform:
+    # Initialization
+    # Parameters:
+    #   waveform_data: A dictionary containing the analog waveform
+    #       specification. This parameter contains all the necessary
+    #       information to define and construct a waveform. It must include a
+    #       key 'type' that specifies the waveform's nature, determining how
+    #       the waveform is generated and what additional data is required.
+    #       The waveform_data dictionary supports the following keys
+    #       'type': A string that indicates the type of the waveform. It
+    #           defines how the waveform will be constructed and what
+    #           additional keys are expected in the waveform_data dictionary.
+    #           Possible values are:
+    #           'constant': Specifies that the waveform is a constant waveform,
+    #               meaning it will produce a sequence of samples where each
+    #               sample has the same value.
+    #           'arbitrary': Indicates that the waveform is defined by an
+    #               arbitrary sequence of samples, allowing for custom
+    #               waveform shapes.
+    #       For 'constant' type:
+    #       'sample': A numerical value representing the constant value for
+    #           each sample in the waveform.
+    #       For 'arbitrary' type:
+    #       'samples': An array or list of numerical values representing the
+    #           waveform's shape. Each element in this array corresponds to a
+    #           sample value in the generated waveform.
     def __init__(self, waveform_data):
         # Initialize the Waveform object with waveform data.
         # The waveform data must specify the type of waveform ('constant' or
@@ -354,25 +378,59 @@ class Waveform:
         # truncated) waveform.
 
 
+#
+# The class for digital waveforms.
+#
 class DigitalWaveform:
     def __init__(self, digital_waveform_data):
-        self.samples = np.empty(0, dtype=bool)
+        # Initialize the DigitalWaveform object with provided waveform data.
+        self.samples = np.empty(0, dtype=bool)  # Start with an empty array
+        # for digital waveform samples.
+
+        # Determine the final value of the waveform based on the last sample
+        # value and its duration. If the duration of the last sample is 0, the
+        # final value is set to the value of that sample. Otherwise, the final
+        # value is set to False (indicating a low signal by default).
         if digital_waveform_data['samples'][-1][1] == 0:
             self.final_value = digital_waveform_data['samples'][-1][0]
         else:
             self.final_value = False
+
+        # Construct the digital waveform by appending samples according to the
+        # specified values and lengths.
         for val, length in digital_waveform_data['samples']:
-            self.samples = np.pad(self.samples, (0, length), 'constant', constant_values=val)
+            self.samples = np.pad(
+                self.samples, (0, length), 'constant', constant_values=val)
 
     def generate(self, length, buffer=0):
+        # Generate the digital waveform based on the specified length and
+        # buffer.
+
+        # If the requested length is longer than the current waveform, pad the
+        # waveform to the desired length using the final value to fill the
+        # extra space.
         if length > len(self.samples):
-            waveform = np.pad(self.samples, (0, length - len(self.samples)), 'constant', constant_values=self.final_value)
+            waveform = np.pad(
+                self.samples, (0, length - len(self.samples)), 'constant',
+                constant_values=self.final_value)
         else:
+            # If the requested length is shorter or equal to the current
+            # waveform, truncate the waveform to the desired length.
             waveform = self.samples[:length]
+
+        # If a buffer is specified, apply a convolution operation to the
+        # waveform to simulate the effect of a digital buffer. This
+        # effectively broadens the transitions in the digital signal.
         if buffer:
+            # Convolve the waveform with a kernel of ones of width
+            # '2 * buffer + 1' to simulate the buffer effect. The resulting
+            # waveform is a logical operation, where True indicates a high
+            # signal wherever the convolution result is nonzero.
             return np.convolve(waveform, np.full(2 * buffer + 1, 1)) != 0
         else:
+            # If no buffer is specified, return the waveform as is.
             return waveform
+
         
         
 class IntegrationWeight:

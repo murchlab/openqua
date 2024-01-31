@@ -20,7 +20,7 @@ class Manager:
         }
 
     # Job execution
-    # Parameters: 
+    # Parameters:
     #    program: defined in ast format
     #    num_avg: number of experiments to perform average
     #    verbose: debug flag

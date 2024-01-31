@@ -1,11 +1,15 @@
-import numpy as np
+# Todos:
+#   Solve the warning: Missing module docstring
+
 import numbers
+import numpy as np
 from scipy.interpolate import interp1d
 
 
 class Element:
     def __init__(self, element_data):
-        self.default_intermediate_frequence = element_data['intermediate_frequency']
+        self.default_intermediate_frequence = element_data[
+            'intermediate_frequency']
         self.intermediate_frequency = self.default_intermediate_frequence
         self.phase = 0.0
         self.time = 0
@@ -19,7 +23,8 @@ class Element:
 
         if 'digitalInputs' in element_data:
             self.digitalInputs = []
-            for _input_name, port_data in element_data['digitalInputs'].items():
+            for _input_name, port_data in element_data[
+                    'digitalInputs'].items():
                 controller, port = port_data['port']
 
                 if 'delay' in port_data:
@@ -51,10 +56,12 @@ class Element:
 
     def update_frequency(self, new_frequency, keep_phase=False):
         if keep_phase:
-            self.phase += 2 * np.pi * (self.intermediate_frequency - new_frequency) * self.time
+            self.phase += 2 * np.pi\
+                * (self.intermediate_frequency - new_frequency) * self.time
         self.intermediate_frequency = new_frequency
 
-    def generate(self, pulse, amplitude=None, offsets=None, duration=None, truncate=None, time=None):
+    def generate(self, pulse, amplitude=None, offsets=None, duration=None,
+                 truncate=None, time=None):
         if time is None:
             time = self.time
         waveforms = {}
@@ -251,39 +258,100 @@ class IQWaveforms:
         return IQ_waveforms
 
 
+#
+# Waveform class
+#
 class Waveform:
     def __init__(self, waveform_data):
-        self.type = waveform_data['type']
+        # Initialize the Waveform object with waveform data.
+        # The waveform data must specify the type of waveform ('constant' or
+        # 'arbitrary').
+        self.type = waveform_data['type']  # Type of waveform, either
+        # 'constant' or 'arbitrary'.
+
+        # For 'constant' waveforms, store the constant value to be used for
+        # the waveform sample.
         if self.type == 'constant':
-            self.sample = waveform_data['sample']
+            self.sample = waveform_data['sample']  # The constant value for
+            # every sample in the waveform.
+
+        # For 'arbitrary' waveforms, store the array of samples defining the
+        # waveform shape.
         elif self.type == 'arbitrary':
-            self.samples = waveform_data['samples']
+            self.samples = waveform_data['samples']  # Array of samples
+            # defining the arbitrary waveform shape.
+
+        # Raise an exception if an unknown waveform type is provided.
         else:
             raise Exception(f"Unknown waveform type '{self.type}'.")
 
+    # Generating the waveform
+    # Parameters:
+    #    length: The desired length of the generated waveform. This is the
+    #            number of samples in the waveform.
+    #    duration: (optional): If provided, the waveform is interpolated to
+    #              fit this new duration. This effectively changes the
+    #              sampling rate or stretches/compresses the waveform in time.
+    #    truncate: (optional): If provided, the waveform is truncated to this
+    #              number of samples. Useful for cutting off the waveform
+    #              after a certain point.
+    # Returns: The method returns a numpy array representing the generated
+    #          waveform. This waveform can be a constant array (if the type is
+    #          'constant'), an array of provided samples (if the type is
+    #          'arbitrary'), or an interpolated/truncated version of these,
+    #          depending on the provided duration and truncate parameters.
+    # Todos:
+    #   Solve the warning: raising too general exception
+    #   Solve the warning: missing function or method docstring
     def generate(self, length, duration=None, truncate=None):
+        # Generate the waveform based on its type and provided parameters.
+
+        # For 'constant' waveforms, create an array of the specified length
+        # filled with the constant sample value.
         if self.type == 'constant':
-            waveform = np.full(length, self.sample)
+            waveform = np.full(length, self.sample)  # Array filled with 'sample' value, of size 'length'.
+
+        # For 'arbitrary' waveforms, use the provided samples as the waveform.
+        # An exception is raised if the provided sample array does not match
+        # the expected length.
         elif self.type == 'arbitrary':
             if len(self.samples) != length:
                 raise Exception(
-                    f"Length of the waveform ({len(self.samples)}) does not match the length of the pulse ({length})."
-                )
-            waveform = self.samples
+                    f"Length of the waveform ({len(self.samples)}) does not "
+                    f"match the expected length ({length})."
+                    )
+            waveform = self.samples  # Use the provided samples directly as
+            # the waveform.
+
+        # Raise an exception if an unexpected waveform type is encountered.
         else:
             raise Exception(f"Unknown waveform type '{self.type}'.")
 
+        # If a 'duration' is provided, interpolate the waveform to fit the new
+        # duration. This is useful for adjusting the waveform's sampling rate
+        # or stretching/compressing its time base.
         if duration is not None:
-            t = np.linspace(0, length - 1, duration)
-            f = interp1d(np.arange(length), waveform)
-            waveform = f(t)
+            t = np.linspace(0, length - 1, duration)  # Create a time vector
+            # for the new duration.
+            f = interp1d(np.arange(length), waveform)  # Create an
+            # interpolation function based on the original waveform.
+            waveform = f(t)  # Interpolate the waveform to fit the new
+            # duration.
 
+        # If a 'truncate' value is provided, truncate the waveform to the
+        # specified length. This is useful for cutting off the waveform after
+        # a certain number of samples.
         if truncate is not None:
             if truncate > len(waveform):
-                raise Exception(f"Truncate ({truncate}) is larger than the length of the waveform ({len(waveform)}).")
-            waveform = waveform[:truncate]
+                raise Exception(
+                    f"Truncate value ({truncate}) is larger than the waveform "
+                    f"length ({len(waveform)})."
+                    )
+            waveform = waveform[:truncate]  # Truncate the waveform to the
+            # specified length.
 
-        return waveform
+        return waveform  # Return the generated (and possibly interpolated or
+        # truncated) waveform.
 
 
 class DigitalWaveform:

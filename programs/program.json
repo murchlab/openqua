@@ -1,0 +1,1000 @@
+{
+  "script": {
+    "variables": {},
+    "body": [
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "wait": {
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "elements": [
+            "res1"
+          ]
+        }
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "play": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {
+              "amp": {
+                "literal": {
+                  "value": 0.5
+                }
+              }
+            }
+          },
+          "element": "muninn1_ge",
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "truncate": {
+            "literal": {
+              "value": 50
+            }
+          }
+        }
+      },
+      {
+        "update_frequency": {
+          "element": "muninn1_ge",
+          "new_frequency": {
+            "literal": {
+              "value": 3900000.0
+            }
+          },
+          "keep_phase": {
+            "literal": {
+              "value": false
+            }
+          }
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "measure": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {}
+          },
+          "element": "res1",
+          "outputs": []
+        }
+      },
+      {
+        "reset": {}
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "wait": {
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "elements": [
+            "res1"
+          ]
+        }
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "play": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {
+              "amp": {
+                "literal": {
+                  "value": 0.5
+                }
+              }
+            }
+          },
+          "element": "muninn1_ge",
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "truncate": {
+            "literal": {
+              "value": 50
+            }
+          }
+        }
+      },
+      {
+        "update_frequency": {
+          "element": "muninn1_ge",
+          "new_frequency": {
+            "literal": {
+              "value": 3900000.0
+            }
+          },
+          "keep_phase": {
+            "literal": {
+              "value": false
+            }
+          }
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "measure": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {}
+          },
+          "element": "res1",
+          "outputs": []
+        }
+      },
+      {
+        "reset": {}
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "wait": {
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "elements": [
+            "res1"
+          ]
+        }
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "play": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {
+              "amp": {
+                "literal": {
+                  "value": 0.5
+                }
+              }
+            }
+          },
+          "element": "muninn1_ge",
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "truncate": {
+            "literal": {
+              "value": 50
+            }
+          }
+        }
+      },
+      {
+        "update_frequency": {
+          "element": "muninn1_ge",
+          "new_frequency": {
+            "literal": {
+              "value": 3900000.0
+            }
+          },
+          "keep_phase": {
+            "literal": {
+              "value": false
+            }
+          }
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "measure": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {}
+          },
+          "element": "res1",
+          "outputs": []
+        }
+      },
+      {
+        "reset": {}
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "wait": {
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "elements": [
+            "res1"
+          ]
+        }
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "play": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {
+              "amp": {
+                "literal": {
+                  "value": 0.5
+                }
+              }
+            }
+          },
+          "element": "muninn1_ge",
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "truncate": {
+            "literal": {
+              "value": 50
+            }
+          }
+        }
+      },
+      {
+        "update_frequency": {
+          "element": "muninn1_ge",
+          "new_frequency": {
+            "literal": {
+              "value": 3900000.0
+            }
+          },
+          "keep_phase": {
+            "literal": {
+              "value": false
+            }
+          }
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "measure": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {}
+          },
+          "element": "res1",
+          "outputs": []
+        }
+      },
+      {
+        "reset": {}
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "wait": {
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "elements": [
+            "res1"
+          ]
+        }
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "play": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {
+              "amp": {
+                "literal": {
+                  "value": 0.5
+                }
+              }
+            }
+          },
+          "element": "muninn1_ge",
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "truncate": {
+            "literal": {
+              "value": 50
+            }
+          }
+        }
+      },
+      {
+        "update_frequency": {
+          "element": "muninn1_ge",
+          "new_frequency": {
+            "literal": {
+              "value": 3900000.0
+            }
+          },
+          "keep_phase": {
+            "literal": {
+              "value": false
+            }
+          }
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "measure": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {}
+          },
+          "element": "res1",
+          "outputs": []
+        }
+      },
+      {
+        "reset": {}
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "wait": {
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "elements": [
+            "res1"
+          ]
+        }
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "play": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {
+              "amp": {
+                "literal": {
+                  "value": 0.5
+                }
+              }
+            }
+          },
+          "element": "muninn1_ge",
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "truncate": {
+            "literal": {
+              "value": 50
+            }
+          }
+        }
+      },
+      {
+        "update_frequency": {
+          "element": "muninn1_ge",
+          "new_frequency": {
+            "literal": {
+              "value": 3900000.0
+            }
+          },
+          "keep_phase": {
+            "literal": {
+              "value": false
+            }
+          }
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "measure": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {}
+          },
+          "element": "res1",
+          "outputs": []
+        }
+      },
+      {
+        "reset": {}
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "wait": {
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "elements": [
+            "res1"
+          ]
+        }
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "play": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {
+              "amp": {
+                "literal": {
+                  "value": 0.5
+                }
+              }
+            }
+          },
+          "element": "muninn1_ge",
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "truncate": {
+            "literal": {
+              "value": 50
+            }
+          }
+        }
+      },
+      {
+        "update_frequency": {
+          "element": "muninn1_ge",
+          "new_frequency": {
+            "literal": {
+              "value": 3900000.0
+            }
+          },
+          "keep_phase": {
+            "literal": {
+              "value": false
+            }
+          }
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "measure": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {}
+          },
+          "element": "res1",
+          "outputs": []
+        }
+      },
+      {
+        "reset": {}
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "wait": {
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "elements": [
+            "res1"
+          ]
+        }
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "play": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {
+              "amp": {
+                "literal": {
+                  "value": 0.5
+                }
+              }
+            }
+          },
+          "element": "muninn1_ge",
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "truncate": {
+            "literal": {
+              "value": 50
+            }
+          }
+        }
+      },
+      {
+        "update_frequency": {
+          "element": "muninn1_ge",
+          "new_frequency": {
+            "literal": {
+              "value": 3900000.0
+            }
+          },
+          "keep_phase": {
+            "literal": {
+              "value": false
+            }
+          }
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "measure": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {}
+          },
+          "element": "res1",
+          "outputs": []
+        }
+      },
+      {
+        "reset": {}
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "wait": {
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "elements": [
+            "res1"
+          ]
+        }
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "play": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {
+              "amp": {
+                "literal": {
+                  "value": 0.5
+                }
+              }
+            }
+          },
+          "element": "muninn1_ge",
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "truncate": {
+            "literal": {
+              "value": 50
+            }
+          }
+        }
+      },
+      {
+        "update_frequency": {
+          "element": "muninn1_ge",
+          "new_frequency": {
+            "literal": {
+              "value": 3900000.0
+            }
+          },
+          "keep_phase": {
+            "literal": {
+              "value": false
+            }
+          }
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "measure": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {}
+          },
+          "element": "res1",
+          "outputs": []
+        }
+      },
+      {
+        "reset": {}
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "wait": {
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "elements": [
+            "res1"
+          ]
+        }
+      },
+      {
+        "align": {
+          "elements": [
+            "muninn1_ge",
+            "res1"
+          ]
+        }
+      },
+      {
+        "play": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {
+              "amp": {
+                "literal": {
+                  "value": 0.5
+                }
+              }
+            }
+          },
+          "element": "muninn1_ge",
+          "duration": {
+            "literal": {
+              "value": 100
+            }
+          },
+          "truncate": {
+            "literal": {
+              "value": 50
+            }
+          }
+        }
+      },
+      {
+        "update_frequency": {
+          "element": "muninn1_ge",
+          "new_frequency": {
+            "literal": {
+              "value": 3900000.0
+            }
+          },
+          "keep_phase": {
+            "literal": {
+              "value": false
+            }
+          }
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "frame_rotation": {
+          "angle": {
+            "literal": {
+              "value": 1.5707963267948966
+            }
+          },
+          "element": "muninn1_ge"
+        }
+      },
+      {
+        "measure": {
+          "pulse": {
+            "pi_pulse_muninn1_ge": {}
+          },
+          "element": "res1",
+          "outputs": []
+        }
+      },
+      {
+        "reset": {}
+      }
+    ]
+  },
+  "result_analysis": {
+    "streams": {}
+  }
+}

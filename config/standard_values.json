@@ -1,0 +1,91 @@
+{
+  "instruments": {
+    "LOs": {
+      "BNC1": {
+        "destination": "mixer_qubits",
+        "power": 15,
+        "frequency": 5400000000.0
+      },
+      "BNC2": {
+        "destination": "mixer_LO",
+        "power": 15,
+        "frequency": 6400000000.0
+      },
+      "BNC3": {
+         "destination": "TWPA",
+        "power": 15,
+        "frequency": 7000000000.0
+      }
+    },
+    "Mixers": {
+      "mixer_munnin1": {
+        "offsets": {
+          "I": 0.0,
+          "Q": 0.0
+        }
+      },
+      "mixer_munnin2": {
+        "offsets": {
+          "I": 0.0,
+          "Q": 0.0
+        }
+      },
+      "mixer_LO": {
+        "offsets": {
+          "I": 0.0,
+          "Q": 0.0
+        }
+      }
+    }
+  },
+  "QPUs": {
+    "Muninn": {
+      "res1": {
+        "lo_frequency": 6985800000.0,
+        "intermediate_frequency": -0.04E9,
+        "pulses": {
+          "meas_pulse": {
+            "amp": 1,
+            "len(ns)": 4000
+          }
+        },
+        "time_of_flight": 252,
+        "kappa/2pi": 415046.5611241034
+      },
+      "res2": {
+        "lo_frequency": 6985800000.0,
+        "intermediate_frequency": 0.10678E9,
+        "pulses": {
+          "meas_pulse": {
+            "amp": 1,
+            "len(ns)": 4000
+          }
+        },
+        "time_of_flight": 252,
+        "kappa/2pi": 415046.5611241034
+      },
+      "muninn1_ge": {
+        "lo_frequency": 4400100000.0,
+        "intermediate_frequency": -0.24920E9,
+        "time_of_flight": 252,
+        "pulses": {
+          "pi_pulse": {
+            "amp": 1,
+            "len(ns)": 32
+          }
+        }
+      },
+      "muninn2_ge": {
+        "lo_frequency": 4400100000.0,
+        "intermediate_frequency": 0.2085E9,
+        "time_of_flight": 252,
+        "pulses": {
+          "pi_pulse": {
+            "amp": 1,
+            "len(ns)": 42
+          }
+        }
+      }
+    }
+  }
+}

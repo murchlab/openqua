@@ -1,16 +1,103 @@
 from . import tewx
 import numpy as np
 
+from qick import *
 
-# Removal note: method does not make sense for the Xilinx4x2
-# def send_scpi(instr_addr, command):
-#     inst = tewx.TEWXAwg(instr_addr, paranoia_level=1)
-#     inst.send_cmd(command)
-#     inst.close()
+class Xilinx4x2QP(RAveragerProgram):
+    """
+    Qick program representing the Xilinx 4x2
+    """
+    
+    def initialize(self):
+        cfg = self.cfg
+        
+        res_ch = cfg["res_ch"]
 
-class Xilinx4x2():
+        # set the nyquist zone
+        self.declare_gen(ch=cfg["res_ch"], nqz=1)
+        
+        # configure the readout lengths and downconversion frequencies 
+        # (ensuring it is an available DAC frequency)
+        for ch in cfg["ro_chs"]:
+            self.declare_readout(ch=ch, length=self.cfg["readout_length"],
+                                 freq=self.cfg["pulse_freq"], gen_ch=cfg["res_ch"])
+
+        # convert frequency to DAC frequency (ensuring it is an available 
+        # ADC frequency)
+        freq = self.freq2reg(cfg["pulse_freq"],
+                             gen_ch=res_ch, ro_ch=cfg["ro_chs"][0])
+        phase = self.deg2reg(cfg["res_phase"], gen_ch=res_ch)
+        gain = cfg["pulse_gain"]
+        self.default_pulse_registers(ch=res_ch, freq=freq, phase=phase, gain=gain)
+
+        style=self.cfg["pulse_style"]
+
+        if style in ["flat_top","arb"]:
+            sigma = cfg["sigma"]
+            self.add_gauss(ch=res_ch, name="measure", sigma=sigma, length=sigma*5)
+            
+        if style == "const":
+            self.set_pulse_registers(ch=res_ch, style=style, length=cfg["length"])
+        elif style == "flat_top":
+            # The first half of the waveform ramps up the pulse, the second half ramps down the pulse
+            self.set_pulse_registers(ch=res_ch, style=style, waveform="measure", length=cfg["length"])
+        elif style == "arb":
+            self.set_pulse_registers(ch=res_ch, style=style, waveform="measure")
+        
+        self.synci(200)  # give processor some time to configure pulses
+    
+    # Central loop of the program
+    def body(self):
+        # Trigger ADC acquisition
+        self.trigger(adcs=[self.cfg["ro_ch"]],adc_trig_offset=self.cfg["adc_trig_offset"])
+
+        # TODO: Apply conditional logic here
+
+        self.wait_all()
+
+        self.sync_all(self.us2cycles(self.cfg["relax_delay"]))
+
+    # Loop condition
+    def update(self):
+
+        # TODO: Some loop condition, below updates the gain
+        self.mathi(self.r_rp, self.r_gain, self.r_gain, '+', self.cfg["step"])
+
+
+class Xilinx4x2API():
     def __init__(self):
-        self.awg = Xilinx4x2AWG()
+        pass
+
+    # Removal note: method does not make sense for the Xilinx4x2
+    # def send_scpi(instr_addr, command):
+    #    pass
+
+    def load_sequence(self, awg_data, display=False, awg_options=None):
+        
+        
+        pass
+
+    def start_from(instr_addr, step_index=0):
+        pass
+
+    def set_amplitudes(instr_addr, amps=[2.0, 2.0]):
+        pass
+
+    def set_coarse_offsets(self, offsets=[0, 0]):
+        pass
+
+    def set_fine_offsets(self, offsets=[0, 0]):
+        pass
+
+    def set_ch_amplitudes(self, ch, amp):
+        pass
+
+    def set_ch_coarse_offset(self, ch, offset):
+        pass
+
+    def set_ch_fine_offset(self, ch, offset):
+        pass
+
 
 
 def start_from(instr_addr, step_index=0):

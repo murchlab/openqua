@@ -6,6 +6,10 @@ import numbers
 import numpy as np
 from scipy.interpolate import interp1d
 
+from .ast import *
+
+from typing import List, Dict, Any
+
 
 class Element:
     def __init__(self, element_data):
@@ -696,7 +700,7 @@ class Task:
             print(f"{port}: (length = {len(task)}, data = {task})")
 
             
-def awg_compiler(program, config, verbose=False):
+def awg_compiler(program: Program, config, verbose=False) -> Dict[str,Dict[str,Any]]:
     controllers = set()
     analog_outputs = set()
     digital_outputs = set()
@@ -761,7 +765,7 @@ def awg_compiler(program, config, verbose=False):
         else:
             raise TypeError
             
-    def evaluate_offsets(offsets):
+    def evaluate_offsets(offsets: Offsets):
         if offsets is None:
             return None
         if offsets.name == 'single':
@@ -774,7 +778,7 @@ def awg_compiler(program, config, verbose=False):
         demod_list.append((variables[variable][0], stream_tag, variables[variable][2]))
         variables[variable] = None
             
-    def statement_replace(statement):
+    def statement_replace(statement: Statement):
         if statement.name == 'align':
             statement.elements = [elements[element.name] for element in statement.elements]
             
@@ -805,7 +809,7 @@ def awg_compiler(program, config, verbose=False):
             statement.amp = evaluate(statement.amp)
             statement.offsets = evaluate_offsets(statement.offsets)
             
-    def statement_handler(statement, task):
+    def statement_handler(statement: Statement, task: Task):
             if verbose:
                 print("------------------------------------------------")
                 # print(statement)
@@ -882,7 +886,7 @@ def awg_compiler(program, config, verbose=False):
 
             return task_end
 
-    def sequence_formatter(tasks):
+    def sequence_formatter(tasks: List[Task]):
         seq_data = {
             controller: {
                 'analog_outputs': {},

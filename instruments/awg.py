@@ -1,6 +1,6 @@
 from .instrument import Instrument
-from . import proteus
-from . import wx2184c
+# from . import proteus
+# from . import wx2184c
 import numpy as np
 import time
 import matplotlib.pyplot as plt
@@ -158,158 +158,158 @@ class Dummy8CH(AWG):
         
 
 
-class Proteus8CH(AWG):
-    def __init__(self, name=None, address=None, options=None):
-        super().__init__('proteus8ch', name, address, options)
-        self.num_analog_channels = 8
-        self.num_digital_channels = 8
-        self.amp_range = [0.025, 0.65]  # half of Vp-p in Volts
-        self.amp_resolution = 0.0005  # in Volts
-        self.offset_range = [-0.5, 0.5]  # in Volts
-        self.offset_resolution = 0.01  # in Volts
+# class Proteus8CH(AWG):
+#     def __init__(self, name=None, address=None, options=None):
+#         super().__init__('proteus8ch', name, address, options)
+#         self.num_analog_channels = 8
+#         self.num_digital_channels = 8
+#         self.amp_range = [0.025, 0.65]  # half of Vp-p in Volts
+#         self.amp_resolution = 0.0005  # in Volts
+#         self.offset_range = [-0.5, 0.5]  # in Volts
+#         self.offset_resolution = 0.01  # in Volts
 
-        self.amps = [0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65]
-        self.coarse_offsets = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.fine_offsets = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+#         self.amps = [0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65]
+#         self.coarse_offsets = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+#         self.fine_offsets = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-    def send_scpi(self, command):
-        print(command)
+#     def send_scpi(self, command):
+#         print(command)
 
-    def load_sequence(self, data, display=False, options=None):
-        if display:
-            self.display(data)
-        # if autorange:
-        #     data, amps, offsets = self.autorange(data)
+#     def load_sequence(self, data, display=False, options=None):
+#         if display:
+#             self.display(data)
+#         # if autorange:
+#         #     data, amps, offsets = self.autorange(data)
         
-        for ch_index in range(8):
-            ch_options = options['analog'][ch_index + 1]
-            if 'amplitude' in ch_options:
-                self.amps[ch_index] = ch_options['amplitude']
-            if 'coarse_offset' in ch_options:
-                self.coarse_offsets[ch_index] = ch_options['coarse_offset']
-            if 'fine_offset' in ch_options:
-                self.fine_offsets[ch_index] = ch_options['fine_offset']
+#         for ch_index in range(8):
+#             ch_options = options['analog'][ch_index + 1]
+#             if 'amplitude' in ch_options:
+#                 self.amps[ch_index] = ch_options['amplitude']
+#             if 'coarse_offset' in ch_options:
+#                 self.coarse_offsets[ch_index] = ch_options['coarse_offset']
+#             if 'fine_offset' in ch_options:
+#                 self.fine_offsets[ch_index] = ch_options['fine_offset']
         
-        t = time.time()
-        print(f"Loading sequence...")
-        self.set_amplitudes(self.amps)
-        self.set_coarse_offsets(self.coarse_offsets)
-        self.set_fine_offsets(self.fine_offsets)
-        rep = proteus.daemon.load_sequence(data)
-        self.set_amplitudes(self.amps)
-        self.set_coarse_offsets(self.coarse_offsets)
-        self.set_fine_offsets(self.fine_offsets)
-        print(f"Finished in {time.time() - t} seconds.")
-        return rep.decode('utf-8')
+#         t = time.time()
+#         print(f"Loading sequence...")
+#         self.set_amplitudes(self.amps)
+#         self.set_coarse_offsets(self.coarse_offsets)
+#         self.set_fine_offsets(self.fine_offsets)
+#         rep = proteus.daemon.load_sequence(data)
+#         self.set_amplitudes(self.amps)
+#         self.set_coarse_offsets(self.coarse_offsets)
+#         self.set_fine_offsets(self.fine_offsets)
+#         print(f"Finished in {time.time() - t} seconds.")
+#         return rep.decode('utf-8')
         
-    def start_from(self, step_index):
-        proteus.daemon.start_from(step_index)
+#     def start_from(self, step_index):
+#         proteus.daemon.start_from(step_index)
         
-    def set_amplitudes(self, amps=[0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65]):
-        # Proteus api uses a different definition for amplitudes
-        rep = proteus.set_amplitudes([2 * amp for amp in amps])
-        self.amps = amps
-        return rep.decode('utf-8')
+#     def set_amplitudes(self, amps=[0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65]):
+#         # Proteus api uses a different definition for amplitudes
+#         rep = proteus.set_amplitudes([2 * amp for amp in amps])
+#         self.amps = amps
+#         return rep.decode('utf-8')
     
-    def set_coarse_offsets(self, offsets=[0, 0, 0, 0, 0, 0, 0, 0]):
-        rep = proteus.set_coarse_offsets(offsets)
-        self.coarse_offsets = coarse_offsets
-        return rep.decode('utf-8')
+#     def set_coarse_offsets(self, offsets=[0, 0, 0, 0, 0, 0, 0, 0]):
+#         rep = proteus.set_coarse_offsets(offsets)
+#         self.coarse_offsets = coarse_offsets
+#         return rep.decode('utf-8')
     
-    def set_fine_offsets(self, offsets=[0, 0, 0, 0, 0, 0, 0, 0]):
-        rep = proteus.set_fine_offsets(offsets)
-        self.fine_offsets = fine_offsets
-        return rep.decode('utf-8')
+#     def set_fine_offsets(self, offsets=[0, 0, 0, 0, 0, 0, 0, 0]):
+#         rep = proteus.set_fine_offsets(offsets)
+#         self.fine_offsets = fine_offsets
+#         return rep.decode('utf-8')
     
-    def set_ch_amplitudes(self, ch, amp):
-        self.amps[ch - 1] = amp
-        rep = proteus.set_amplitudes([2 * amp for amp in self.amps])
-        return rep.decode('utf-8')
+#     def set_ch_amplitudes(self, ch, amp):
+#         self.amps[ch - 1] = amp
+#         rep = proteus.set_amplitudes([2 * amp for amp in self.amps])
+#         return rep.decode('utf-8')
     
-    def set_ch_coarse_offset(self, ch, offset):
-        self.offsets[ch - 1] = offset
-        rep = proteus.set_coarse_offsets(self.offsets)
-        return rep.decode('utf-8')
+#     def set_ch_coarse_offset(self, ch, offset):
+#         self.offsets[ch - 1] = offset
+#         rep = proteus.set_coarse_offsets(self.offsets)
+#         return rep.decode('utf-8')
     
-    def set_ch_fine_offset(self, ch, offset):
-        self.offsets[ch - 1] = offset
-        rep = proteus.set_fine_offsets(self.offsets)
-        return rep.decode('utf-8')
+#     def set_ch_fine_offset(self, ch, offset):
+#         self.offsets[ch - 1] = offset
+#         rep = proteus.set_fine_offsets(self.offsets)
+#         return rep.decode('utf-8')
 
 
-class WX2184C(AWG):
-    def __init__(self, name=None, address=None, options=None):
-        super().__init__('wx2184c', name, address, options)
-        self.num_analog_channels = 4
-        self.num_digital_channels = 4
-        self.amp_range = [0.05, 2.0]  # half of Vp-p in Volts
-        self.amp_resolution = 0.001  # in Volts
-        self.offset_range = [-1.0, 1.0]  # in Volts
-        self.offset_resolution = 0.001  # in Volts
+# class WX2184C(AWG):
+#     def __init__(self, name=None, address=None, options=None):
+#         super().__init__('wx2184c', name, address, options)
+#         self.num_analog_channels = 4
+#         self.num_digital_channels = 4
+#         self.amp_range = [0.05, 2.0]  # half of Vp-p in Volts
+#         self.amp_resolution = 0.001  # in Volts
+#         self.offset_range = [-1.0, 1.0]  # in Volts
+#         self.offset_resolution = 0.001  # in Volts
 
-        self.amps = [2.0, 2.0, 2.0, 2.0]
-        self.coarse_offsets = [0.0, 0.0, 0.0, 0.0]
-        self.fine_offsets = [0.0, 0.0, 0.0, 0.0]
+#         self.amps = [2.0, 2.0, 2.0, 2.0]
+#         self.coarse_offsets = [0.0, 0.0, 0.0, 0.0]
+#         self.fine_offsets = [0.0, 0.0, 0.0, 0.0]
 
-    def send_scpi(self, command):
-        wx2184c.send_scpi(self.address, self.address, command)
+#     def send_scpi(self, command):
+#         wx2184c.send_scpi(self.address, self.address, command)
 
-    def start_from(self, step_index):
-        wx2184c.start_from(self.address, step_index)
+#     def start_from(self, step_index):
+#         wx2184c.start_from(self.address, step_index)
 
-    def set_amplitudes(self, amps=[2.0, 2.0, 2.0, 2.0]):
-        wx2184c.set_amplitudes(self.address, amps)
-        self.amps = amps
+#     def set_amplitudes(self, amps=[2.0, 2.0, 2.0, 2.0]):
+#         wx2184c.set_amplitudes(self.address, amps)
+#         self.amps = amps
 
-    def set_coarse_offsets(self, offsets=[0.0, 0.0, 0.0, 0.0]):
-        wx2184c.set_offsets(self.address, offsets)
-        self.coarse_offsets = offsets
+#     def set_coarse_offsets(self, offsets=[0.0, 0.0, 0.0, 0.0]):
+#         wx2184c.set_offsets(self.address, offsets)
+#         self.coarse_offsets = offsets
 
-    def set_fine_offsets(self, offsets=[0.0, 0.0, 0.0, 0.0]):
-        # Not implemented
-        self.fine_offsets = offsets
+#     def set_fine_offsets(self, offsets=[0.0, 0.0, 0.0, 0.0]):
+#         # Not implemented
+#         self.fine_offsets = offsets
 
-    def set_ch_amplitudes(self, ch, amp):
-        self.amps[ch - 1] = amp
-        self.set_amplitudes(self.amps)
+#     def set_ch_amplitudes(self, ch, amp):
+#         self.amps[ch - 1] = amp
+#         self.set_amplitudes(self.amps)
     
-    def set_ch_coarse_offset(self, ch, offset):
-        self.coarse_offsets[ch - 1] = offset
-        self.set_coarse_offsets(self.coarse_offsets)
+#     def set_ch_coarse_offset(self, ch, offset):
+#         self.coarse_offsets[ch - 1] = offset
+#         self.set_coarse_offsets(self.coarse_offsets)
     
-    def set_ch_fine_offset(self, ch, offset):
-        # Not implemented
-        self.fine_offsets[ch - 1] = offset
-        self.set_fine_offsets(self.fine_offsets)
+#     def set_ch_fine_offset(self, ch, offset):
+#         # Not implemented
+#         self.fine_offsets[ch - 1] = offset
+#         self.set_fine_offsets(self.fine_offsets)
 
-    def load_sequence(self, data, display=False, options=None):
-        if display:
-            self.display(data)
-        # if autorange:
-        #     data, amps, offsets = self.autorange(data)
+#     def load_sequence(self, data, display=False, options=None):
+#         if display:
+#             self.display(data)
+#         # if autorange:
+#         #     data, amps, offsets = self.autorange(data)
         
-        for ch_index in range(4):
-            ch_options = options['analog'][ch_index + 1]
-            if 'amplitude' in ch_options:
-                self.amps[ch_index] = ch_options['amplitude']
-            if 'coarse_offset' in ch_options:
-                self.coarse_offsets[ch_index] = ch_options['coarse_offset']
-            if 'fine_offset' in ch_options:
-                self.fine_offsets[ch_index] = ch_options['fine_offset']
+#         for ch_index in range(4):
+#             ch_options = options['analog'][ch_index + 1]
+#             if 'amplitude' in ch_options:
+#                 self.amps[ch_index] = ch_options['amplitude']
+#             if 'coarse_offset' in ch_options:
+#                 self.coarse_offsets[ch_index] = ch_options['coarse_offset']
+#             if 'fine_offset' in ch_options:
+#                 self.fine_offsets[ch_index] = ch_options['fine_offset']
 
-        for ch_index in range(4):
-            data['analog'][ch_index + 1] = [
-                (task - self.coarse_offsets[ch_index]) / self.amps[ch_index] for task in
-                data['analog'][ch_index + 1]
-            ]
+#         for ch_index in range(4):
+#             data['analog'][ch_index + 1] = [
+#                 (task - self.coarse_offsets[ch_index]) / self.amps[ch_index] for task in
+#                 data['analog'][ch_index + 1]
+#             ]
 
-        # if volt_max - volt_min > amp:
-        #     print(f'Warning: analog output CH{channel} is clipping.')
+#         # if volt_max - volt_min > amp:
+#         #     print(f'Warning: analog output CH{channel} is clipping.')
         
-        t = time.time()
-        print(f"Loading sequence...")
-        rep = wx2184c.load_sequence(self.address, data)
-        self.set_amplitudes(self.amps)
-        self.set_coarse_offsets(self.coarse_offsets)
-        self.set_fine_offsets(self.fine_offsets)
-        print(f"Finished in {time.time() - t} seconds.")
+#         t = time.time()
+#         print(f"Loading sequence...")
+#         rep = wx2184c.load_sequence(self.address, data)
+#         self.set_amplitudes(self.amps)
+#         self.set_coarse_offsets(self.coarse_offsets)
+#         self.set_fine_offsets(self.fine_offsets)
+#         print(f"Finished in {time.time() - t} seconds.")

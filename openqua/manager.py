@@ -1,5 +1,4 @@
 import instruments
-from .compilers import awg_compiler
 import numpy as np
 import time
 from threading import Thread
@@ -19,16 +18,17 @@ class Manager:
             for controller, controller_data in config['controllers'].items()
         }
 
-    # Job execution
-    # Parameters:
-    #    program: defined in ast format
-    #    num_avg: number of experiments to perform average
-    #    verbose: debug flag
-    #    display: whether to display the graphics from the simulator
-    #    jobqueue: (optional) reuse an existing jobqueue
-    # Returns: data streams from the DAQ
     def execute(self, program, num_avg=20, verbose=False, display=False, jobqueue=None):
+        from openqua.compilers import awg_compiler
+
+        with open("program.json", 'w') as f:
+            f.write(str(program))
+
         controller_seq_data = awg_compiler(program, self.config)
+
+        with open("seq_data.txt", 'w') as f:
+            f.write(str(controller_seq_data))
+
         controller, seq_data = list(controller_seq_data.items())[0]
         total_saves = seq_data['num_saves'] * num_avg
         if jobqueue is not None:

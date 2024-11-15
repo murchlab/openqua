@@ -1,5 +1,5 @@
 from .instrument import Instrument
-from .alazar import daq_ats9870
+# from .alazar import daq_ats9870
 from queue import Queue
 import numpy as np
 from threading import Thread
@@ -100,35 +100,35 @@ class DummyDaq(Daq):
         self.flags_queue.put('stop_acquisition')
         
 
-class ATS9870(Daq):
-    def __init__(self, name=None, address=None, options=None):
-        super().__init__('ats9870', name, address, options)
+# class ATS9870(Daq):
+#     def __init__(self, name=None, address=None, options=None):
+#         super().__init__('ats9870', name, address, options)
     
-    def stream_data_raw(self, num_records, post_trigger_samples, options=None):
-        if options is None:
-            options = {}
+#     def stream_data_raw(self, num_records, post_trigger_samples, options=None):
+#         if options is None:
+#             options = {}
             
-        if 'coupling' in options:
-            coupling = options['coupling']
-        else:
-            coupling = 'AC'
+#         if 'coupling' in options:
+#             coupling = options['coupling']
+#         else:
+#             coupling = 'AC'
             
-        if 'input_range' in options:
-            input_range = options['input_range']
-        else:
-            input_range = 2.0
+#         if 'input_range' in options:
+#             input_range = options['input_range']
+#         else:
+#             input_range = 2.0
 
-        if 'trig_level' in options:
-            trig_level = options['trig_level']
-        else:
-            trig_level = 0.0
+#         if 'trig_level' in options:
+#             trig_level = options['trig_level']
+#         else:
+#             trig_level = 0.0
             
-        alazar_params = daq_ats9870.get_alazar_parameters(num_records, post_trigger_samples, coupling, input_range)
-        while True:
-            try:
-                board = daq_ats9870.configure_board(alazar_params, None, trig_level)
-                break
-            except Exception as e:
-                print(e)
-                time.sleep(1)
-        daq_ats9870.stream_data(alazar_params, board, self.rec_raw_queue)
+#         alazar_params = daq_ats9870.get_alazar_parameters(num_records, post_trigger_samples, coupling, input_range)
+#         while True:
+#             try:
+#                 board = daq_ats9870.configure_board(alazar_params, None, trig_level)
+#                 break
+#             except Exception as e:
+#                 print(e)
+#                 time.sleep(1)
+#         daq_ats9870.stream_data(alazar_params, board, self.rec_raw_queue)

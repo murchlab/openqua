@@ -139,7 +139,7 @@ class Xilinx4x2(Daq):
     
     def stream_data_raw(self, num_records, post_trigger_samples, options=None):
         if options is None:
-            options = {}x
+            options = {}
             
         if 'coupling' in options:
             coupling = options['coupling']

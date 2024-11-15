@@ -1,5 +1,4 @@
 import openqua
-from .compilers import awg_compiler
 import json
 from numbers import Number
 
@@ -435,6 +434,8 @@ class Program:
         return {'script': self.script.to_dict(), 'result_analysis': self.result_analysis.to_dict()}
         
     def _compile(self, config, verbose=False):
+        from openqua.compilers import awg_compiler
+
         return awg_compiler(self, config, verbose)
         
     def __enter__(self):

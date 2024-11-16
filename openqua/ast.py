@@ -4,6 +4,8 @@ from numbers import Number
 
 json_indent = 2
 
+from typing import List, Dict, Any
+
 class Variable:
     def __init__(self, dtype='INT', size=1):
         self.name = None
@@ -373,12 +375,12 @@ class Output:
 class Script:
     def __init__(self):
         self.variables = []
-        self.body = []
-        
+        self.body: List[Statement] = []
+
     def add_variable(self, variable):
         self.variables.append(variable)
         
-    def add_instruct(self, instruct):
+    def add_instruct(self, instruct: Statement):
         self.body.append(instruct)
         
     def to_dict(self):

@@ -2,7 +2,7 @@ import instruments
 import numpy as np
 import time
 from threading import Thread
-from ..instruments.xilinx4x2.xilinx4x2_api import *
+from instruments.xilinx4x2.xilinx4x2_api import qick_execute
 
 
 progress_interval = 0.1  # seconds
@@ -21,6 +21,8 @@ class Manager:
 
     def execute(self, program, num_avg=20, verbose=False, display=False, jobqueue=None):
         from openqua.compilers import awg_compiler
+
+        print("writing program.json")
 
         with open("program.json", 'w') as f:
             f.write(str(program))

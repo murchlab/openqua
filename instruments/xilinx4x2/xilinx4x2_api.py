@@ -1,6 +1,4 @@
 from queue import Queue
-from . import tewx
-import numpy as np
 
 from qick import *
 

@@ -118,7 +118,7 @@ class DummyController(Controller):
         awg_data = {'analog': seq_data['analog_outputs'], 'digital': seq_data['digital_outputs']}
         self.awg.load_sequence(awg_data, display)
         
-    def execute(self, seq_data, num_avg=1, display=False):
+    def execute(self, seq_data, num_avg=1, display=False, options=None):
         self.load_sequence(seq_data, display, autorange=True)
         import numpy as np
 

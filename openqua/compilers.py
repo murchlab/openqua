@@ -8,7 +8,7 @@ from scipy.interpolate import interp1d
 
 from .ast import *
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 
 from qick import *
 
@@ -718,7 +718,7 @@ def evaluate_offsets(offsets: Offsets):
     else:  # IQ
         return (evaluate(offsets.I), evaluate(offsets.Q))
 
-def awg_compiler(program: Program, config, verbose=False) -> Dict[str,Dict[str,Any]]:
+def awg_compiler(program: Program, config, verbose=False) -> Tuple[Dict[str,Dict[str,Any]], List[RAveragerProgram]]:
     controllers = set()
     analog_outputs = set()
     digital_outputs = set()
@@ -946,13 +946,18 @@ def awg_compiler(program: Program, config, verbose=False) -> Dict[str,Dict[str,A
     tasks = []
     last_task = False
     task_index = 1
+
+    qick_programs: List[RAveragerProgram] = []
     
     for statement in program.script.body:
         statement_replace(statement)
 
     # Maybe there is a better way to do this
     if 'xilinx4x2' in controllers:
-        qick_execute(program.script.body, config, elements, waveforms, pulse_dict)
+        qick_programs.append(
+            qick_transpile(program.script.body, config, 
+                           elements, waveforms, pulse_dict)
+        )
     
     for statement in program.script.body:
         if task is None:
@@ -976,12 +981,12 @@ def awg_compiler(program: Program, config, verbose=False) -> Dict[str,Dict[str,A
         
     seq_data = sequence_formatter(tasks)
     seq_data[next(iter(controllers))]['demod_list'] = demod_list_formatter(measurements)
-    return seq_data
+    return (seq_data, qick_programs)
 
 
 def qick_transpile(statements: List[Statement], u_cfg, 
                    elements: List[Element], waveforms: List[Waveform | DigitalWaveform], 
-                   pulse_dict: Dict[str, Pulse]) -> Dict[str,Dict[str,Any]]:
+                   pulse_dict: Dict[str, Pulse]) -> RAveragerProgram:
     """
     Transpiles an openQUA program in QICK.
 
@@ -1125,16 +1130,15 @@ def qick_transpile(statements: List[Statement], u_cfg,
                         element.reset()
                     
                     self.sync_all(self.us2cycles(100))
-                    
-
-                    
         
         def update(self):
+            # TODO: loop condition
             return super().update()
-    
+
     soc = QickSoc()
 
-    cfg = {
+    # TODO: configure this to work with user config
+    qick_config = {
         "res_ch": 0, # --Fixed
         "ro_ch": 0, # --Fixed
         "reps": 1, # --Fixed
@@ -1150,5 +1154,5 @@ def qick_transpile(statements: List[Statement], u_cfg,
         "threshold": 50
     }
 
-    QickProgram(soc, cfg)
+    return QickProgram(soc, qick_config)
             

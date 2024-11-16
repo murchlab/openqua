@@ -2,6 +2,7 @@ import instruments
 import numpy as np
 import time
 from threading import Thread
+from ..instruments.xilinx4x2.xilinx4x2_api import *
 
 
 progress_interval = 0.1  # seconds
@@ -24,10 +25,16 @@ class Manager:
         with open("program.json", 'w') as f:
             f.write(str(program))
 
-        controller_seq_data = awg_compiler(program, self.config)
+        (controller_seq_data, qick_programs) = awg_compiler(program, self.config)
 
         with open("seq_data.txt", 'w') as f:
             f.write(str(controller_seq_data))
+        
+        # temporary fix, maybe we run on multiple devices
+        if len(qick_programs) > 0:
+            streams = qick_execute(qick_programs[0], self.config)
+
+            return streams
 
         controller, seq_data = list(controller_seq_data.items())[0]
         total_saves = seq_data['num_saves'] * num_avg

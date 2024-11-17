@@ -2,9 +2,10 @@ from queue import Queue
 
 from qick import *
 
-def qick_execute(program: RAveragerProgram, u_cfg):
-    streams = Queue()
+from openqua.compilers import QickStream
 
-    program.acquire_decimated()
-    
-    return streams
+def qick_execute(program: RAveragerProgram, ro_cfg: dict[str, dict[str, QickStream]], u_cfg):
+    iq_list = program.acquire_decimated()
+
+    # TODO: adjust this representation as needed
+    return (iq_list, ro_cfg["streams"])

@@ -12,9 +12,13 @@ from typing import List, Dict, Any, Tuple
 
 from qick import *
 
+# this should probably be made dynamic somehow
+TRIG_LEN = 100
+
 
 class Element:
-    def __init__(self, element_data):
+    def __init__(self, element_name, element_data):
+        self.name = element_name
         self.default_intermediate_frequence = element_data[
             'intermediate_frequency']
         self.intermediate_frequency = self.default_intermediate_frequence
@@ -718,7 +722,7 @@ def evaluate_offsets(offsets: Offsets):
     else:  # IQ
         return (evaluate(offsets.I), evaluate(offsets.Q))
 
-def awg_compiler(program: Program, config, verbose=False) -> Tuple[Dict[str,Dict[str,Any]], List[RAveragerProgram]]:
+def awg_compiler(program: Program, config, verbose=False) -> Tuple[Dict[str,Dict[str,Any]], List[NDAveragerProgram]]:
     controllers = set()
     analog_outputs = set()
     digital_outputs = set()
@@ -746,7 +750,7 @@ def awg_compiler(program: Program, config, verbose=False) -> Tuple[Dict[str,Dict
 
     def load_elements():
         for element_name, element_data in config['elements'].items():
-            elements[element_name] = Element(element_data)
+            elements[element_name] = Element(element_name, element_data)
 
     def load_pulse_dict():
         for pulse_name, pulse_data in config['pulses'].items():
@@ -947,7 +951,7 @@ def awg_compiler(program: Program, config, verbose=False) -> Tuple[Dict[str,Dict
     last_task = False
     task_index = 1
 
-    qick_programs: List[RAveragerProgram] = []
+    qick_programs: List[NDAveragerProgram] = []
     
     for statement in program.script.body:
         statement_replace(statement)
@@ -983,10 +987,29 @@ def awg_compiler(program: Program, config, verbose=False) -> Tuple[Dict[str,Dict
     seq_data[next(iter(controllers))]['demod_list'] = demod_list_formatter(measurements)
     return (seq_data, qick_programs)
 
+class QickVariable():
+    def __init__(self, name: str, pos: int, data_s: int, iq=0):
+        self.name = name
+        self.pos = pos
+        self.size = data_s
+        self.iq = iq
+
+
+class QickStream():
+    def __init__(self, name: str):
+        self.name = name
+        self.data: List[QickVariable] = []
+    
+    def insert(self, var: QickVariable):
+        self.data.append({
+            "pos": var.pos,
+            "len": var.size
+        })
+
 
 def qick_transpile(statements: List[Statement], u_cfg, 
                    elements: List[Element], waveforms: List[Waveform | DigitalWaveform], 
-                   pulse_dict: Dict[str, Pulse]) -> RAveragerProgram:
+                   pulse_dict: Dict[str, Pulse]):
     """
     Transpiles an openQUA program in QICK.
 
@@ -1013,7 +1036,10 @@ def qick_transpile(statements: List[Statement], u_cfg,
         }
     }
 
-    class QickProgram(RAveragerProgram):
+    output_streams: Dict[str, QickStream] = {}
+    variables = {}
+
+    class QickProgram(NDAveragerProgram):
         def initialize(self):
             cfg = self.cfg
 
@@ -1036,16 +1062,20 @@ def qick_transpile(statements: List[Statement], u_cfg,
             self.regs = []
             
             for x in gen_channels:
+                r_name = gen_ch.keys()[x]
                 self.regs.append({
-                    "rp": self.ch_page(cfg["res1"]),
-                    "freq": self.sreg(x, "freq"),
-                    "gain": self.sreg(x, "gain")
+                    "rp": self.ch_page(cfg[r_name]),
+                    "freq": self.get_gen_reg(cfg[r_name], "freq"),
+                    "gain": self.get_gen_reg(cfg[r_name], "gain"),
+                    "phase": self.get_gen_reg(cfg[r_name], "phase")
                 })
 
             # give registers, generators time to update
             self.sync_all(self.us2cycles(500))
         
         def body(self):
+            cfg = self.cfg
+
             for statement in statements:
                 if statement.name == 'align':
                     # align some elements so that they execute
@@ -1062,13 +1092,10 @@ def qick_transpile(statements: List[Statement], u_cfg,
                     
                         
                 elif statement.name == 'frame_rotation':
-                    statement.element.frame_rotate(statement.angle)
+                    self.regs[gen_ch[statement.element.name]]["phase"].set_to(statement.angle)
                     
                 elif statement.name == 'update_frequency':
-                    
-                    self.safe_regwi()
-
-                    statement.element.update_frequency(statement.new_frequency, statement.keep_phase)
+                    self.regs[gen_ch[statement.element.name]]["freq"].set_to(statement.new_frequency)
                     
                 elif statement.name == 'play':
                     p_pulse: Pulse = pulse_dict[statement.pulse.name]
@@ -1102,7 +1129,7 @@ def qick_transpile(statements: List[Statement], u_cfg,
                     p_amp = evaluate(statement.amp)
                     p_offsets = evaluate_offsets(statement.offsets)
 
-                    self.trigger(adcs=gen_ch[p_element]["out"], adc_trig_offset=100)
+                    self.trigger(adcs=gen_ch[p_element]["out"], adc_trig_offset=TRIG_LEN)
 
                     # TODO: use the correct data here
                     self.add_pulse(gen_ch[statement.element]["index"], statement.pulse.name, 
@@ -1118,12 +1145,21 @@ def qick_transpile(statements: List[Statement], u_cfg,
                                              gain=cfg["res_gain"])
                     
                     self.pulse(gen_ch[statement.element]["index"], t=0)
-                    
 
+                    for output in statement.outputs:
+                        variables[output.I.name] = QickVariable(
+                            output.I.name, measurement_offset, TRIG_LEN, iq=0
+                        )
+                        variables[output.Q.name] = QickVariable(
+                            output.Q.name, measurement_offset, TRIG_LEN, iq=1
+                        )
+                    
+                    measurement_offset += TRIG_LEN
             
                 elif statement.name == 'save':
-                    # TODO: handle streams
-                    pass
+                    var = variables[statement.variable.name]
+
+                    output_streams[statement.stream.tag].insert(var)
                     
                 elif statement.name == 'reset':
                     for _, element in elements.items():
@@ -1154,5 +1190,7 @@ def qick_transpile(statements: List[Statement], u_cfg,
         "threshold": 50
     }
 
-    return QickProgram(soc, qick_config)
+    return (QickProgram(soc, qick_config), {
+        "streams": output_streams
+    })
             
